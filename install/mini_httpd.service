@@ -1,0 +1,14 @@
+[Unit]
+Description=Mini HTTPD incusko server
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/sudo /usr/sbin/mini_httpd -p 80 -d /var/www/incusko -u www-data -c '**.sh' -i /var/run/mini-httpd.pid -l /var/log/mini-httpd.log
+Restart=on-failure
+RestartSec=5s
+StartLimitBurst=5
+StartLimitIntervalSec=60s
+User=root
+
+[Install]
+WantedBy=multi-user.target
