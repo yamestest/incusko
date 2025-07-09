@@ -32,7 +32,9 @@
 ## 📦 Inštalácia
 
 ```bash
-wget -O ttyd https://github.com/tsl0922/ttyd/releases/latest/download/ttyd.x86_64
-chmod +x ttyd
-sudo mv ttyd /usr/local/sbin/ttyd
+wget -O incusko https://github.com//yamestest/incusko/releases/latest/download/
+tar -ztvf incusko.tar.gz
+cd incusko
+chmod +x install.sh
+./install.sh
 
