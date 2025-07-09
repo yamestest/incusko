@@ -1,52 +1,57 @@
 #!/bin/bash
 set -euo pipefail
 
-# Tento skript vytvorí používateľa incusko, nastaví práva, nainštaluje balíky, nasadí mini_httpd a nakopíruje webové súbory.
-
-# Overenie, že bežíme ako root
+# Overenie, či bežíme ako root
 if [ "$(id -u)" -ne 0 ]; then
   echo "Spustite ako root" >&2
   exit 1
 fi
 
-# 1) Vytvorenie používateľa incusko s domácim adresárom, bez hesla
+# 1) Aktualizácia balíkov a inštalácia mini-httpd + incus-base
+apt-get update
+apt-get install -y mini-httpd incus-base
+
+# 2) Vytvorenie skupiny a používateľa incusko bez hesla
 groupadd -f incus-admin
 if ! id incusko &>/dev/null; then
   useradd -m -s /bin/bash incusko
+  passwd -d incusko
 fi
-passwd -d incusko
 
-# 2) Pridanie incusko do skupiny incus-admin
+# 3) Pridanie incusko do skupiny incus-admin
 usermod -aG incus-admin incusko
 
-# 3) Dopísanie sudoers pravidiel pre www-data
+# 4) Pridanie „cd /home/incusko“ do .bashrc používateľa incusko
+BASHRC=/home/incusko/.bashrc
+if ! grep -qx 'cd /home/incusko' "$BASHRC"; then
+  echo 'cd /home/incusko' >> "$BASHRC"
+  chown incusko:incusko "$BASHRC"
+fi
+
+# 5) Dopísanie sudoers pravidiel pre www-data
 cat <<EOF >/etc/sudoers.d/incusko
 www-data ALL=(incusko) NOPASSWD: /usr/bin/incus, /usr/local/sbin/ttyd
 www-data ALL=(ALL) NOPASSWD: /usr/bin/pkill
 EOF
 chmod 440 /etc/sudoers.d/incusko
 
-# 4) Inštalácia mini_httpd a incus-base
-apt-get update
-apt-get install -y mini-httpd incus-base
-
-# 5) Nasadenie systemd servisu pre mini_httpd
+# 6) Nasadenie systemd servisu pre mini_httpd
 cp install/mini_httpd.service /etc/systemd/system/mini_httpd.service
 systemctl daemon-reload
 systemctl enable mini_httpd
 systemctl start mini_httpd
 
-# 6) Vytvorenie webroot a CGI adresára
+# 7) Vytvorenie webroot a CGI adresárov
 mkdir -p /var/www/incusko/cgi-bin
 
-# 7) Kopírovanie frontendu (*.html, *.js)
+# 8) Kopírovanie frontendu (*.html, *.js)
 cp -a ./*.html ./*.js /var/www/incusko/
 
-# 8) Kopírovanie CGI skriptov
+# 9) Kopírovanie CGI skriptov a nastavenie práv
 cp -a ./cgi-bin/* /var/www/incusko/cgi-bin/
 chmod +x /var/www/incusko/cgi-bin/*.sh
 
-# Nastavenie vlastníka www-data
+# 10) Vlastník adresára webroot
 chown -R www-data:www-data /var/www/incusko
 
 echo "Inštalácia dokončená."
