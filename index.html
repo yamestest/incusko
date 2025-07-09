@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <title>Incusko Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <script defer src="incusko.js"></script>
+  <style>
+    body { min-height: 100vh;}
+  </style>
+</head>
+<body class="has-background-dark has-text-white-ter">
+
+  <section class="section is-fullhd is-fullheight">
+    <div class="container">
+      <h1 class="title has-text-white">📦 Incusko Dashboard</h1>
+
+      <!-- Toolbar -->
+      <div class="buttons mb-4">
+        <button class="button is-primary" onclick="openCreateModal()">➕ Pridať inštanciu</button>
+        <button class="button is-success" onclick="openTerminal('incusko')">Terminal</button>
+      </div>
+      
+
+      <!-- Tabuľka kontajnerov -->
+      <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+          <tr>
+            <th>Meno</th><th>Status</th><th>IP</th><th>Typ</th><th>CPU</th><th>RAM</th><th>Snapshoty</th><th>Akcie</th>
+          </tr>
+        </thead>
+        <tbody id="containerTable">
+          <!-- dynamicky vyplní JS -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Modal: Pridať inštanciu -->
+  <div id="createModal" class="modal">
+    <div class="modal-background" onclick="closeCreateModal()"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">➕ Nová inštancia</p>
+        <button class="delete" aria-label="close" onclick="closeCreateModal()"></button>
+      </header>
+      <section class="modal-card-body">
+        <div class="field">
+          <label class="label">Meno inštancie</label>
+          <div class="control">
+            <input id="instanceName" class="input" type="text" placeholder="napr. webserver">
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Obraz</label>
+          <div class="control">
+            <div class="select is-fullwidth">
+              <select id="instanceImage"></select>
+            </div>
+          </div>
+        </div>
+        <div class="field is-horizontal">
+          <div class="field-body">
+            <div class="field">
+              <label class="label">CPU</label>
+              <input id="cpuLimit" class="input" type="text" placeholder="napr. 2">
+            </div>
+            <div class="field">
+              <label class="label">RAM</label>
+              <input id="ramLimit" class="input" type="text" placeholder="napr. 512MB">
+            </div>
+            <div class="field">
+              <label class="label">Disk</label>
+              <input id="diskLimit" class="input" type="text" placeholder="napr. 5GB">
+            </div>
+          </div>
+        </div>
+      </section>
+      <footer class="modal-card-foot">
+        <button id="confirmBtn" class="button is-success">Vytvoriť</button>
+        <button class="button" onclick="closeCreateModal()">Zrušiť</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Modal: Snapshoty -->
+  <div id="snapshotsModal" class="modal">
+    <div class="modal-background" onclick="zavriSnapshots()"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">📸 Snapshoty</p>
+        <button class="delete" aria-label="close" onclick="zavriSnapshots()"></button>
+      </header>
+      <section class="modal-card-body" id="snapshotContent">
+        <!-- dynamický výpis snapshotov -->
+      </section>
+    </div>
+  </div>
+
+</body>
+</html>
+
