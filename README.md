@@ -32,7 +32,7 @@
 ## 📦 Inštalácia
 
 ```bash
-wget -O incusko.tar.gz https://github.com/yamestest/incusko/archive/refs/tags/1.05.tar.gz
+wget https://github.com/<user>/<repo>/releases/latest/download/incusko-latest.tar.gz
 tar -xzf incusko.tar.gz
 cd incusko-1.05
 chmod +x install.sh
