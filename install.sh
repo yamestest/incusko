@@ -1,15 +1,15 @@
 #!/bin/bash
 set -euo pipefail
 
-# Overenie root
+# Overenie, či bežíme ako root
 if [ "$(id -u)" -ne 0 ]; then
   echo "Spustite ako root" >&2
   exit 1
 fi
 
-# 1) Aktualizácia a inštalácia mini-httpd + incus-base
+# 1) Aktualizácia a inštalácia mini-httpd, incus-base a dnsmasq
 apt-get update
-apt-get install -y mini-httpd incus-base
+apt-get install -y mini-httpd incus-base dnsmasq
 
 # 2) Inštalácia ttyd (latest)
 URL_BASE="https://github.com/tsl0922/ttyd/releases/latest/download"
@@ -31,7 +31,7 @@ if ! id incusko &>/dev/null; then
   passwd -d incusko
 fi
 
-# 4) Pridanie incusko do incus-admin
+# 4) Pridanie incusko do skupiny incus-admin
 usermod -aG incus-admin incusko
 
 # 5) Pridanie cd do .bashrc
