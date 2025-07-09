@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# 👤 Heslo pre užívateľa wpuser (môžeš zadať ako parameter)
+DB_PASS="${1:-wp123}"
+
+apk update
+apk add mariadb mariadb-client openrc
+
+# 🔧 Inicializácia OpenRC a MariaDB
+touch /run/openrc/softlevel
+mysql_install_db --user=mysql --datadir=/var/lib/mysql
+rc-service mariadb start
+rc-update add mariadb default
+
+# 🔒 Vytvor len globálneho používateľa wpuser (žiadna databáza!)
+mysql -uroot -e "
+CREATE USER 'wpuser'@'%' IDENTIFIED BY '${DB_PASS}';
+GRANT ALL PRIVILEGES ON *.* TO 'wpuser'@'%';
+FLUSH PRIVILEGES;"
