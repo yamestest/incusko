@@ -11,6 +11,23 @@ fi
 apt-get update
 apt-get install -y mini-httpd incus-base
 
+# 1a) Inštalácia ttyd (binárka podľa architektúry)  
+URL_BASE="https://github.com/tsl0922/ttyd/releases/download/1.7.4"  
+ARCH=$(uname -m)  
+case "$ARCH" in  
+  x86_64)  FILE="ttyd.x86_64"  ;;  
+  aarch64) FILE="ttyd.aarch64" ;;  
+  armv7l)  FILE="ttyd.armv7l"  ;;  
+  *)  
+    echo "❌ Nepodporovaná architektúra: $ARCH" >&2  
+    exit 1  
+    ;;  
+esac  
+
+wget -qO ttyd "$URL_BASE/$FILE"  
+chmod +x ttyd  
+mv ttyd /usr/local/sbin/ttyd
+
 # 2) Vytvorenie skupiny a používateľa incusko bez hesla
 groupadd -f incus-admin
 if ! id incusko &>/dev/null; then
@@ -51,7 +68,7 @@ cp -a ./*.html ./*.js /var/www/incusko/
 cp -a ./cgi-bin/* /var/www/incusko/cgi-bin/
 chmod +x /var/www/incusko/cgi-bin/*.sh
 
-# 10) Vlastník adresára webroot
+# 10) Nastavenie vlastníka webrootu
 chown -R www-data:www-data /var/www/incusko
 
 echo "Inštalácia dokončená."
