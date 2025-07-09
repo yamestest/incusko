@@ -16,8 +16,7 @@ jobs:
         run: |
           mkdir -p dist
           git archive --format=tar.gz --prefix=incusko-${{ github.ref_name }}/ ${{ github.ref_name }} > dist/incusko-latest.tar.gz
-
-
+          
       - name: Upload archive to release
         uses: softprops/action-gh-release@v1
         with:
