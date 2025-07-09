@@ -20,4 +20,4 @@ jobs:
       - name: Upload archive to release
         uses: softprops/action-gh-release@v1
         with:
-          files: dist/${{ github.ref_name }}.tar.gz
+          files: dist/incusko-${{ github.ref_name }}.tar.gz
