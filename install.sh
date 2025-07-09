@@ -12,7 +12,8 @@ apt-get update
 apt-get install -y mini-httpd incus-base
 
 # 1a) Inštalácia ttyd (binárka podľa architektúry)  
-URL_BASE="https://github.com/tsl0922/ttyd/releases/download/1.7.4"  
+##URL_BASE="https://github.com/tsl0922/ttyd/releases/download/1.7.4" 
+URL_BASE="https://github.com/tsl0922/ttyd/releases/latest/download"
 ARCH=$(uname -m)  
 case "$ARCH" in  
   x86_64)  FILE="ttyd.x86_64"  ;;  
